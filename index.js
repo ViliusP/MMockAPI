@@ -1,22 +1,45 @@
+var moment = require('moment');
+const bodyParser = require('body-parser');
+const journeysRoutes = require("./journeyRoutes.json")
 var express = require("express");
 var app = express();
+
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 app.listen(3000, () => {
     console.log("Server running on port 3000");
 });
 
+
 app.get("/PikasGPSReports/PikasGPSWebService.ashx", async(req, res, next) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    if (Math.random() >= 0.1) {
+    await new Promise(resolve => setTimeout(resolve, 1000 * 1)); //Lag simulation (1 second)
+
+
+    let vehicleid = req.query.vehicleid
+    let transport = req.query.transport
+    let time = req.query.time
+    let date = req.query.date
+
+    if (vehicleid === undefined || transport === undefined || time === undefined || date === undefined || (vehicleid !== "troleibusai" && vehicleid !=="autobusai")) {
+        res.status(400)
+        res.send(JSON.stringify({}))
+        return next()
+    }
+    console.log("nx?")
+        if (Math.random() >= 0.1) { //90% of probability that API will response with data (status: OK)
+        route = journeysRoutes[getRandomInt(journeysRoutes.length)].route
         res.json({
             status: "OK",
-            transport: "autobusai",
-            vehicle_id: "1645",
-            date: "2018-11-26",
-            time: "05:04:38",
-            request_time: new Date.now(),
+            transport: vehicle,
+            vehicle_id: transport,
+            date: date,
+            time: time,
+            request_time: moment().format("YYYY-MM-DD HH:mm:ss"),
             route: {
-                number: "100",
-                run: "100-02"
+                number: route,
+                run: route + "-02"
             },
             stop: {
                 stop_id: "2858",
@@ -30,21 +53,26 @@ app.get("/PikasGPSReports/PikasGPSWebService.ashx", async(req, res, next) => {
             }
 
         })
-    } else if (Math.random() >= 0.5) {
+    } else if (Math.random() >= 0.5) { //5% of probability that API will response with NODATA status
         res.json({
 
             status: "NODATA",
-            transport: "autobusai",
-            vehicle_id: "1645",
-            date: "2018-11-26",
-            time: "05:04:38",
-            request_time: new Date.now(),
+            transport: vehicle,
+            vehicle_id: transport,
+            date: date,
+            time: time,
+            request_time: moment().format("YYYY-MM-DD HH:mm:ss"),
             route: null,
             stop: null
 
         })
-    } else {
-        await new Promise(resolve => setTimeout(resolve, 3000));
+    } else { //5% of probability that API will respond in 10 seconds
+        await new Promise(resolve => setTimeout(resolve, 1000 * 10));
     }
 
 });
+
+//return random number [0, max]
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
