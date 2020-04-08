@@ -9,4 +9,4 @@ Merakas mock API
 
 # Endpoint
 
-`localhost:3000/PikasGPSReports/PikasGPSWebService.ashx`
+`localhost:3000/PikasGPSReports/PikasGPSWebService.ashx?transport=autobusai&vehicleid=100&date=2020-04-20&time=12:45`
