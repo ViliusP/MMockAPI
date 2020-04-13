@@ -22,18 +22,17 @@ app.get("/PikasGPSReports/PikasGPSWebService.ashx", async(req, res, next) => {
     let time = req.query.time
     let date = req.query.date
 
-    if (vehicleid === undefined || transport === undefined || time === undefined || date === undefined || (vehicleid !== "troleibusai" && vehicleid !=="autobusai")) {
+    if (vehicleid === undefined || time === undefined || date === undefined || (transport !== "troleibusai" && transport !=="autobusai")) {
         res.status(400)
         res.send(JSON.stringify({}))
         return next()
     }
-    console.log("nx?")
         if (Math.random() >= 0.1) { //90% of probability that API will response with data (status: OK)
         route = journeysRoutes[getRandomInt(journeysRoutes.length)].route
         res.json({
             status: "OK",
-            transport: vehicle,
-            vehicle_id: transport,
+            transport: transport,
+            vehicle_id: vehicleid,
             date: date,
             time: time,
             request_time: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -57,8 +56,8 @@ app.get("/PikasGPSReports/PikasGPSWebService.ashx", async(req, res, next) => {
         res.json({
 
             status: "NODATA",
-            transport: vehicle,
-            vehicle_id: transport,
+            transport: transport,
+            vehicle_id: vehicleid,
             date: date,
             time: time,
             request_time: moment().format("YYYY-MM-DD HH:mm:ss"),
